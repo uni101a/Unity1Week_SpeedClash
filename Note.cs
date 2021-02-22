@@ -15,4 +15,9 @@ public class Note : MonoBehaviour
     {
         
     }
+
+    public void Move(Vector3 start, Vector3 end)
+    {
+        transform.position = Vector3.Lerp(start, end, 0.1f);
+    }
 }

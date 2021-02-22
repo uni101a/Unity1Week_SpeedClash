@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class ProductZone : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] NotesPool _notesPool = default;
 
-    // Update is called once per frame
-    void Update()
+    public void Product()
     {
-        
+        string key = "Red";
+        _notesPool.GetObject(key);
     }
 }
