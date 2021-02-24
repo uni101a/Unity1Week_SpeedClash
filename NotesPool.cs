@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ノーツオブジェクトプール
+/// </summary>
 public class NotesPool : MonoBehaviour
 {
     private Dictionary<string, List<GameObject>> notesList = new Dictionary<string, List<GameObject>>()
@@ -12,6 +15,7 @@ public class NotesPool : MonoBehaviour
     };
     private Dictionary<string, GameObject> resourcesNotes = new Dictionary<string, GameObject>();
 
+    //初期化するオブジェクトの数
     [SerializeField] int initializeProductNum = 7;
 
     private void Start()
@@ -19,8 +23,15 @@ public class NotesPool : MonoBehaviour
         resourcesNotes.Add("Red", (GameObject)Resources.Load("RedNote"));
         resourcesNotes.Add("Green", (GameObject)Resources.Load("GreenNote"));
         resourcesNotes.Add("Blue", (GameObject)Resources.Load("BlueNote"));
+
+        InitializedPool();
     }
 
+    /// <summary>
+    /// オブジェクトプールから非アクティブのオブジェクトを返す
+    /// </summary>
+    /// <param name="key">ノーツの色(Red, Green, Blue)</param>
+    /// <returns>非アクティブのノーツ</returns>
     public GameObject GetObject(string key)
     {
         foreach (GameObject note in notesList[key])
@@ -39,11 +50,18 @@ public class NotesPool : MonoBehaviour
         return newNote;
     }
 
+    /// <summary>
+    /// オブジェクトを非アクティブ化
+    /// </summary>
+    /// <param name="note">ゲームオブジェクト</param>
     public void ReleaseObject(GameObject note)
     {
         note.SetActive(false);
     }
 
+    /// <summary>
+    /// オブジェクトプールを初期化
+    /// </summary>
     public void InitializedPool()
     {
         foreach(string key in resourcesNotes.Keys)
@@ -53,6 +71,7 @@ public class NotesPool : MonoBehaviour
                 GameObject note = (GameObject)Instantiate(resourcesNotes[key]);
                 note.transform.parent = transform;
                 notesList[key].Add(note);
+                ReleaseObject(note);
             }
         }
     }
