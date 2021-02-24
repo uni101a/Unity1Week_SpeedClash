@@ -5,11 +5,6 @@ using UnityEngine;
 public class Note : MonoBehaviour
 {
     private NotesManager _noteManager;
-    //このオブジェクトがステージ中何番目のノーツかを保持する
-    private int noteNumber = 0;
-    //1区切りに対してのノーツの座標
-    private Vector3 startPos = Vector3.zero;
-    private Vector3 endPos = Vector3.zero;
 
     /// <summary>
     /// ノーツオブジェクトの現在の状態
@@ -20,6 +15,15 @@ public class Note : MonoBehaviour
         MOVING, //移動中
     }
     private NOTE_STATE _noteState = NOTE_STATE.IDLING;
+
+    /// <summary>
+    /// DestroyPropartiesで初期化する変数
+    /// </summary>
+    //このオブジェクトがステージ中何番目のノーツかを保持する
+    private int noteNumber = 0;
+    //1区切りに対してのノーツの座標
+    private Vector3 startPos = Vector3.zero;
+    private Vector3 endPos = Vector3.zero;
 
     // Start is called before the first frame update
     void Start()
@@ -45,7 +49,7 @@ public class Note : MonoBehaviour
         if (_noteState == NOTE_STATE.IDLING)
             _noteState = NOTE_STATE.MOVING;
 
-        Move(transform.position, endPos, Time.deltaTime * _noteManager.NoteSpeed);
+        Move(transform.position, endPos, Time.deltaTime * _noteManager.NoteSpeed * 1.5f);
     }
 
     /// <summary>
@@ -73,20 +77,67 @@ public class Note : MonoBehaviour
     /// <summary>
     /// 変数を初期化
     /// </summary>
-    public void DestroyProparties()
+    private void DestroyProparties()
     {
         noteNumber = -1;
         startPos = Vector3.zero;
         endPos = Vector3.zero;
+        _noteState = NOTE_STATE.MOVING; //IDLING状態でfalseにすると一回分動かなくなる
+
+        if(_noteManager.EnableClashNote == gameObject)
+        {
+            _noteManager.EnableClashNote = null;
+        }
     }
 
+    /// <summary>
+    /// ノーツオブジェクトと非アクティブにする
+    /// </summary>
+    public void ReleaseNote()
+    {
+        DestroyProparties();
+        _noteManager.ReleaseNote(gameObject);
+    }
+
+    /// <summary>
+    /// クラッシュゾーンに突入したときオブジェクトにクラッシュ判定を持たせる
+    /// </summary>
+    /// <param name="other"></param>
+    private void OnTriggerEnter(Collider other)
+    {
+        //ノーツがクラッシュゾーンと触れたか判定
+        if(other.gameObject.tag == "ClashZone")
+        {
+            _noteManager.EnableClashNote = gameObject;
+        }
+    }
+
+    /// <summary>
+    /// ノーツオブジェクトがクラッシュゾーンから脱出したときクラッシュ判定を削除
+    /// </summary>
+    /// <param name="other"></param>
+    private void OnTriggerExit(Collider other)
+    {
+        //ノーツがクラッシュゾーンから離れたかを判定
+        if (other.gameObject.tag == "ClashZone")
+        {
+            if(_noteManager.EnableClashNote == gameObject)
+            {
+                _noteManager.EnableClashNote = null;
+            }
+        }
+    }
+
+    /// <summary>
+    /// ノーツオブジェクトがデストロイゾーンに突入したらオブジェクトをリリースする
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerStay(Collider other)
     {
         //ノーツがデストロイゾーンに入ったときオブジェクトを非アクティブ化
         if(other.gameObject.tag == "DestroyZone")
         {
-            DestroyProparties();
-            _noteManager.ReleaseNote(gameObject);
+            ReleaseNote();
         }
     }
 }
