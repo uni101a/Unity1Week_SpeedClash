@@ -5,80 +5,42 @@ using System;
 
 public class ClashZone : MonoBehaviour
 {
-    private bool isOver = false;
-    public bool IsOver
-    {
-        get{ return isOver; }
-        set{ isOver = value; }
-    }
-    private GameObject overedNote = null;
+    private Score _score;
 
-    private float clashZoneX;
-    private float perfectZone;
-    private float greatZone;
-    private float goodZone;
-    private float badZone;
+    private float perfectZone = 0.02f;
+    private float greatZone = 0.075f;
 
     private void Start()
     {
-        clashZoneX = transform.position.x;
-    }
-
-    public GameObject GetOveredNote()
-    {
-        return overedNote;
+        _score = Score.GetInstance();
     }
 
     /// <summary>
-    /// return ...
-    /// 0 → Perfect
-    /// 1 → Great
-    /// 2 → Good
-    /// 3 → Bad
+    /// クラッシュ時の精度を返す    
+    /// 5 → Perfect
+    /// 3 → Great
+    /// 1 → Bad
     /// </summary>
-    /// <returns></returns>
-    public int GetAcc()
+    /// <returns>精度</returns>
+    public int GetAcc(GameObject clashedNote)
     {
-        ResetOverval();
-        float noteLeftedge = overedNote.transform.position.x - (overedNote.transform.localScale.x / 2.0f);
-        float distance = Math.Abs(clashZoneX - noteLeftedge);
+        float distance = Math.Abs(transform.position.x - clashedNote.transform.position.x);
 
         int acc = -1;
 
         if(distance < perfectZone)
         {
-            acc = 0;
+            acc = (int)Score.ACCURACY.PERFECT;
         }
         else if (distance < greatZone)
         {
-            acc = 1;
+            acc = (int)Score.ACCURACY.GREAT;
         }
-        else if (distance < goodZone)
+        else
         {
-            acc = 2;
-        }
-        else if (distance < badZone)
-        {
-            acc = 3;
+            acc = (int)Score.ACCURACY.BAD;
         }
 
         return acc;
-    }
-
-    private void ResetOverval()
-    {
-        isOver = false;
-        overedNote = null;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        isOver = true;
-        overedNote = other.gameObject;
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        ResetOverval();
     }
 }
