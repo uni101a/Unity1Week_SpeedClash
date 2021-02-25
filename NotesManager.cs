@@ -31,16 +31,25 @@ public class NotesManager : MonoBehaviour
     {
         return isMoving;
     }
+
     private float noteSpeed = 2f;
     public float NoteSpeed
     {
         get { return noteSpeed; }
         set { noteSpeed = value; }
     }
-    private float MAX_NOTESPEED = 2f;
+
+    private float MAX_NOTESPEED = 7f;
     public float GET_MAX_NOTESPEED()
     {
         return MAX_NOTESPEED;
+    }
+
+    private int correctedNotesNum = 0;
+    public int CorrectedNotesNum
+    {
+        get { return correctedNotesNum; }
+        set { correctedNotesNum = value; }
     }
 
     private float _time = 0;
@@ -96,6 +105,13 @@ public class NotesManager : MonoBehaviour
             yield return null;
         }
         action();
+    }
+
+    public void AcceralateNotes()
+    {
+        if (CorrectedNotesNum % 10 == 0)
+            NoteSpeed = System.Math.Min(NoteSpeed + 0.2f, GET_MAX_NOTESPEED());
+        Debug.Log(NoteSpeed);
     }
 
     public void ReleaseNote(GameObject releaseObject)
