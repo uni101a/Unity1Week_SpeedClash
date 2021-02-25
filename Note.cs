@@ -16,6 +16,9 @@ public class Note : MonoBehaviour
     }
     private NOTE_STATE _noteState = NOTE_STATE.IDLING;
 
+    private Score _score;
+
+    private Color myColor;
     /// <summary>
     /// DestroyPropartiesで初期化する変数
     /// </summary>
@@ -29,6 +32,22 @@ public class Note : MonoBehaviour
     void Start()
     {
         _noteManager = transform.parent.transform.parent.GetComponent<NotesManager>();
+        _score = Score.GetInstance();
+
+        switch (gameObject.tag)
+        {
+            case "Red":
+                myColor = new Color(1, 0, 0);
+                break;
+            case "Green":
+                myColor = new Color(0, 1, 0);
+                break;
+            case "Blue":
+                myColor = new Color(0, 0, 1);
+                break;
+            default:
+                break;
+        }
     }
 
     private void Update()
@@ -105,6 +124,9 @@ public class Note : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
+        if (!Player.IsGaming)
+            return;
+
         //ノーツがクラッシュゾーンと触れたか判定
         if(other.gameObject.tag == "ClashZone")
         {
@@ -118,9 +140,18 @@ public class Note : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
+        if (!Player.IsGaming)
+            return;
+
         //ノーツがクラッシュゾーンから離れたかを判定
         if (other.gameObject.tag == "ClashZone")
         {
+            if (Player.IsMissed(myColor))
+            {
+                _score.ResetCombo();
+                Player.Missed();
+            }
+
             if(_noteManager.EnableClashNote == gameObject)
             {
                 _noteManager.EnableClashNote = null;
