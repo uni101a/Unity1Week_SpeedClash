@@ -38,7 +38,7 @@ public class Score
     /// コンボ数に応じてスコアに倍率をかける
     /// </summary>
     private int comboBonus = 1;
-    public int ConboBonus
+    public int ComboBonus
     {
         get { return comboBonus; }
         set { comboBonus = value; }
@@ -66,24 +66,26 @@ public class Score
     /// トータルスコアを更新
     /// </summary>
     /// <param name="acc">精度</param>
-    public void AddScore(int acc)
+    public int AddScore(int acc, int feaver)
     {
-        if(acc == 1)
-        {
-            Combo = 0;
-        }
-        else
-        {
-            Combo++;
-            if (combo == 5)
-                ConboBonus *= 2;
-            else if (combo == 10)
-                ConboBonus *= 2;
-            else if (combo == 20)
-                ConboBonus *= 2;
-        }
+        if (combo == 15)
+            ComboBonus *= 2;
+        if (combo == 40)
+            ComboBonus *= 2;
 
-        TotalScore += NOTE_SCORE * (acc + ConboBonus);
+        int score = NOTE_SCORE * acc * ComboBonus * feaver;
+        TotalScore += score;
+        return score;
     }
 
+    public void Initialize()
+    {
+        _score = null;
+    }
+
+    public void ResetCombo()
+    {
+        Combo = 0;
+        ComboBonus = 1;
+    }
 }
