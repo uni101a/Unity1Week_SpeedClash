@@ -12,6 +12,7 @@ public class Score
     {
         PERFECT = 5,
         GREAT = 3,
+        GOOD = 2,
         BAD = 1,
     }
 
