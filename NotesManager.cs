@@ -20,8 +20,8 @@ public class NotesManager : MonoBehaviour
         {new Vector3(1.095f, 1.517f, -0.31f)},
         {new Vector3(1.717f, 0.6f, -0.31f)},
         {new Vector3(1.717f, -0.6f, -0.31f)},
-        {new Vector3(1.095f, -1.6f, -0.31f)}, //y = -1.517f
-        {new Vector3(0, -1.884f, -0.31f)}, //y = -1.93f
+        {new Vector3(1.095f, -1.6f, -0.31f)},
+        {new Vector3(0, -1.884f, -0.31f)},
         {new Vector3(-1.095f, -1.517f, -0.31f)},
     };
     private NotesPool _notesPool;
@@ -60,6 +60,8 @@ public class NotesManager : MonoBehaviour
         get { return enableClashNote; }
         set { enableClashNote = value; }
     }
+
+    private int LevelUpNotesNum = 10;
 
     /// <summary>
     /// index ...
@@ -109,9 +111,12 @@ public class NotesManager : MonoBehaviour
 
     public void AcceralateNotes()
     {
-        if (CorrectedNotesNum % 10 == 0)
+        if (CorrectedNotesNum % LevelUpNotesNum == 0)
+        {
             NoteSpeed = System.Math.Min(NoteSpeed + 0.2f, GET_MAX_NOTESPEED());
-        Debug.Log(NoteSpeed);
+            if (NoteSpeed > 5)
+                LevelUpNotesNum = 20;
+        }
     }
 
     public void ReleaseNote(GameObject releaseObject)
