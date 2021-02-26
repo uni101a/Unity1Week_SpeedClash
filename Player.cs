@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     [SerializeField] Text _scoreText;
     [SerializeField] Text _comboText;
     [SerializeField] Text _feaverText;
-    [SerializeField] Text _addScoreText;
+    [SerializeField] AccuracyText _accuracyText;
     [SerializeField] Slider _hpSlider;
 
     private Score _score;
@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     private static bool isMissing = false;
 
     private static int hp = 0;
-    private int MAX_HPVALUE = 4;
+    private int MAX_HPVALUE = 5;
     private int MAX_DIGIT = 7;
     private int feaverBonus = 1;
     private int FEAVERVALUE = 2;
@@ -145,13 +145,13 @@ public class Player : MonoBehaviour
         switch (color)
         {
             case "RedNote(Clone)":
-                return new Color(1, 0, 0);
+                return ColorSetter.GetRedColor();
 
             case "GreenNote(Clone)":
-                return new Color(0, 1, 0);
+                return ColorSetter.GetGreenColor();
 
             case "BlueNote(Clone)":
-                return new Color(0, 0, 1);
+                return ColorSetter.GetBlueColor();
 
             default:
                 break;
@@ -177,7 +177,7 @@ public class Player : MonoBehaviour
     private void UpdateScore(int accuracy)
     {
         int score = _score.AddScore(accuracy, feaverBonus);
-        _addScoreText.text = "+" + score;
+        _accuracyText.SetText(accuracy);
         _scoreText.text = _score.TotalScore.ToString().PadLeft(MAX_DIGIT, '0');
     }
 
@@ -199,7 +199,7 @@ public class Player : MonoBehaviour
     {
         isMissing = false;
         _comboText.text = "";
-        _addScoreText.text = "Miss!";
+        _accuracyText.SetMiss();
         _hpSlider.value -= 1.0f / MAX_HPVALUE;
     }
 
@@ -208,15 +208,15 @@ public class Player : MonoBehaviour
         int rand = UnityEngine.Random.Range(1, 4);
         if(rand == 1)
         {
-            _color = new Color(1, 0, 0);
+            _color = ColorSetter.GetRedColor();
         }
         else if (rand == 2)
         {
-            _color = new Color(0, 1, 0);
+            _color = ColorSetter.GetGreenColor();
         }
         else if (rand == 3)
         {
-            _color = new Color(0, 0, 1);
+            _color = ColorSetter.GetBlueColor();
         }
         else
         {
@@ -229,6 +229,7 @@ public class Player : MonoBehaviour
     private void LoadRanking()
     {
         IsGaming = false;
+        isMissing = false;
         naichilab.RankingLoader.Instance.SendScoreAndShowRanking(_score.TotalScore);
 
         StartCoroutine("Restart");

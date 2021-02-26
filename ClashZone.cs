@@ -7,7 +7,7 @@ public class ClashZone : MonoBehaviour
 {
     private Score _score;
 
-    private float perfectZone = 0.02f;
+    private float perfectZone = 0.01f;
     private float greatZone = 0.075f;
 
     private void Start()
