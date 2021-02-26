@@ -92,7 +92,7 @@ public class ColorStore : MonoBehaviour
         {
             isFeaver = false;
             storedLiquit = 0;
-            feaverColor = new Color(1, 1, 1);
+            feaverColor = new Color(0, 0, 0);
             _material.SetFloat("_Height", storedLiquit);
             _material.SetColor("_MixColor", _color);
         }
@@ -100,26 +100,7 @@ public class ColorStore : MonoBehaviour
 
     public void OnFeaver()
     {
-        float[] colorVals = { _color.r, _color.g, _color.b };
-        Color fevC = new Color(1, 1, 1);
-        float tempMax = -1;
-        for(int i=0; i<colorVals.Length; i++)
-        {
-            if(tempMax < colorVals[i])
-            {
-                if (i == 0)
-                    fevC = new Color(1, 0, 0);
-                else if (i == 1)
-                    fevC = new Color(0, 1, 0);
-                else if(i == 2)
-                    fevC = new Color(0, 0, 1);
-                else
-                    fevC = new Color(1, 1, 1);
-
-                tempMax = colorVals[i];
-            }
-        }
-        feaverColor = fevC;
+        feaverColor = ColorSetter.GetColor(ColorSetter.GetColorType(_color));
         
         _color = new Color(0, 0, 0);
         isFeaver = true;
