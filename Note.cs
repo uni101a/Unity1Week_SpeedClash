@@ -37,13 +37,13 @@ public class Note : MonoBehaviour
         switch (gameObject.tag)
         {
             case "Red":
-                myColor = new Color(1, 0, 0);
+                myColor = ColorSetter.GetRedColor();
                 break;
             case "Green":
-                myColor = new Color(0, 1, 0);
+                myColor = ColorSetter.GetGreenColor();
                 break;
             case "Blue":
-                myColor = new Color(0, 0, 1);
+                myColor = ColorSetter.GetBlueColor();
                 break;
             default:
                 break;
